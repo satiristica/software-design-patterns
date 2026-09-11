@@ -1,2 +1,4 @@
-# software-design-patterns
-university assignments
+# Software Design Patterns
+
+[View Assignment 1](GameCharacterBuilder) 
+
