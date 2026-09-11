@@ -19,4 +19,13 @@ public final class GameCharacter {
         this.weapon = weapon;
     }
     
+    @Override 
+    public String toString() {
+        return "GameCharacter[" +
+        "race=" + race +
+        ", role=" + role + 
+        ", health=" + health +
+        ", weapon=" + weapon +
+        "]";
+    }
 }
