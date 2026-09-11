@@ -41,7 +41,7 @@ public class CharacterObjectBuilder implements CharacterBuilder {
     }
 
 
-    public void validate() {
+    private void validate() {
         if (race == null || race.isBlank()) {
             throw new IllegalStateException("Enter the race.");
         }   
