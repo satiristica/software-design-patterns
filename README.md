@@ -1,4 +1,4 @@
 # Software Design Patterns
 
-[View Assignment 1](GameCharacterBuilder) 
+[View Assignment 1](GameCharacterBuilder) <= CLICK HERE
 
