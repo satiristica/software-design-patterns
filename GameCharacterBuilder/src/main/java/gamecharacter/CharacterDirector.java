@@ -13,7 +13,7 @@ public class CharacterDirector {
 
     private static final int KNIGHT_HEALTH = 100;
     private static final int ARCHER_HEALTH = 80;
-
+    private static final int HEALTH_TESTER = -500; 
 
 
     public void makeKnight(CharacterBuilder builder) {
@@ -32,4 +32,14 @@ public class CharacterDirector {
             .setHealth(ARCHER_HEALTH)
             .setWeapon(BOW);
     }
+
+
+    public void testingValidation(CharacterBuilder builder) {
+        builder
+            .setRace(ELF)
+            .setRole(ARCHER)
+            .setHealth(HEALTH_TESTER) 
+            .setWeapon(BOW); 
+    }
+
 }

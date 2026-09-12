@@ -1,0 +1,7 @@
+gamecharacter/GameCharacter.class
+gamecharacter/CharacterValidator.class
+gamecharacter/Main.class
+gamecharacter/CharacterObjectBuilder.class
+gamecharacter/CharacterBuilder.class
+gamecharacter/CharacterDirector.class
+gamecharacter/CharacterJsonBuilder.class

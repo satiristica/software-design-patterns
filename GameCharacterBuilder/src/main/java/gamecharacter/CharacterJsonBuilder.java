@@ -36,7 +36,7 @@ public class CharacterJsonBuilder implements CharacterBuilder {
 
     
     public String getResult() {
-        validate();
+        CharacterValidator.validate(race, role, health, weapon);
         
         return """
         {
@@ -46,28 +46,5 @@ public class CharacterJsonBuilder implements CharacterBuilder {
             "weapon": "%s"
         }
                 """.formatted(race, role, health, weapon);
-    }
-
-
-    private void validate() {
-
-        if (race == null || race.isBlank()) {
-            throw new IllegalStateException("Enter the race.");
-        }   
-
-
-        if (role == null || role.isBlank()) {
-            throw new IllegalStateException("Enter the role.");
-        }
-
-
-        if (health <= 0) {
-            throw new IllegalStateException("Health must be greater than 0.");
-        }
-
-
-        if (weapon == null || weapon.isBlank()) {
-            throw new IllegalStateException("Enter the weapon.");
-        }
     }
 }
