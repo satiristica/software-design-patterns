@@ -1,13 +1,13 @@
 package spacemission.factory.creators;
 
-import spacemission.factory.products.Spacecraft;
+import spacemission.factory.products.MissionVehicle;
 
 public abstract class Mission {
 
-    protected abstract Spacecraft createSpacecraft();
+    protected abstract MissionVehicle createSpacecraft();
 
     public final void launchMission() {
-        Spacecraft spacecraft = createSpacecraft();
+        MissionVehicle spacecraft = createSpacecraft();
 
         System.out.println("Preparing mission");
         spacecraft.deploy();

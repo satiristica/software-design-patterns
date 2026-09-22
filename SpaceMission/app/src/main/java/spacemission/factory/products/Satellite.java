@@ -1,6 +1,6 @@
 package spacemission.factory.products;
 
-public class Satellite implements Spacecraft {
+public class Satellite implements MissionVehicle {
 
     private boolean inOrbit;
 

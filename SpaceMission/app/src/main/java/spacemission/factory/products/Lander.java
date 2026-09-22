@@ -1,6 +1,6 @@
 package spacemission.factory.products;
 
-public class Lander implements Spacecraft {
+public class Lander implements MissionVehicle {
 
     private boolean toolsActive;
 

@@ -1,6 +1,6 @@
 package spacemission.factory.products;
 
-public interface Spacecraft {
+public interface MissionVehicle {
     void deploy();
 
     boolean isOperational();

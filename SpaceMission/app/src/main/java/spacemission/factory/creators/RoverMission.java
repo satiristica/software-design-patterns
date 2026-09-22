@@ -1,11 +1,11 @@
 package spacemission.factory.creators;
 
 import spacemission.factory.products.Rover;
-import spacemission.factory.products.Spacecraft;
+import spacemission.factory.products.MissionVehicle;
 
 public class RoverMission extends Mission {
     @Override
-    protected Spacecraft createSpacecraft() {
+    protected MissionVehicle createSpacecraft() {
         return new Rover();
     }
 }

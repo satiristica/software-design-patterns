@@ -1,6 +1,6 @@
 package spacemission.factory.products;
 
-public class Rover implements Spacecraft {
+public class Rover implements MissionVehicle {
 
     private boolean deployed;
 
