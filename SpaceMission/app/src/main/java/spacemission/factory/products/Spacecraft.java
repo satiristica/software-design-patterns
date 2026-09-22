@@ -1,3 +1,5 @@
-public class Spacecraft {
-    
+package spacemission.factory.products;
+
+public interface Spacecraft {
+    void deploy();
 }
