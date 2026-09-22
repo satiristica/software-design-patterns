@@ -1,5 +1,5 @@
 package spacemission.abstractfactory.products;
 
-public class CommunicationSystem {
-    
+public interface CommunicationSystem {
+    String transmit(String data);
 }

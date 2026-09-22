@@ -1,5 +1,5 @@
 package spacemission.abstractfactory.products;
 
-public class NavigationModule {
-    
+public interface NavigationModule {
+    String calcRoute();
 }

@@ -1,5 +1,5 @@
 package spacemission.abstractfactory.products;
 
-public class EnvironmentalSensor {
-    
+public interface EnvironmentalSensor {
+    String collectData();
 }
