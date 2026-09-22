@@ -34,7 +34,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "spacemission.Client"
+    mainClass = "spacemission.SpaceMission"
 }
 
 tasks.named<Test>("test") {
