@@ -7,7 +7,7 @@ public class Rover implements Spacecraft {
     @Override
     public void deploy() {
         deployed = true;
-        System.out.println("Rover deployed.");
+        System.out.println("Rover deployed into surface.");
     }
 
     @Override
