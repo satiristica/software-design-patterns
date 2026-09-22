@@ -1,5 +1,5 @@
 package cryptography.crypto_machines; 
 
-public class Purple {
+public class Purple implements CryptoMachine {
 
 }
