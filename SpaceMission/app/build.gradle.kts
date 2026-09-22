@@ -34,7 +34,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "spacemission.SpaceMission"
+    mainClass = "spacemission.factory.FactoryShow"
 }
 
 tasks.named<Test>("test") {
@@ -46,7 +46,7 @@ tasks.named<Test>("test") {
 
 
 
-tasks.register<JavaExec>("runFactory") {
+tasks.register<JavaExec>("runFactoryMethod") {
     group = "application"
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("spacemission.factory.FactoryShow")
