@@ -1,11 +1,11 @@
 package cryptography.creator;
 
 import cryptography.crypto_machines.CryptoMachine;
-import cryptography.crypto_machines.Lorenz;
+import cryptography.crypto_machines.PairSwapMachine;
 
-public class LorenzOps extends EncryptOps {
+public class PairSwapOps extends EncryptOps {
     @Override  
     protected CryptoMachine createMachine() {
-        return new Lorenz();
+        return new PairSwapMachine();
     }
 }

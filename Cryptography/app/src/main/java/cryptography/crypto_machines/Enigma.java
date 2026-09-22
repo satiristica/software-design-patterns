@@ -1,4 +1,0 @@
-package cryptography.crypto_machines;
-
-public class Enigma implements CryptoMachine {
-}
