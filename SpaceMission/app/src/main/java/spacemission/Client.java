@@ -5,7 +5,7 @@ import spacemission.factory.creators.Mission;
 import spacemission.factory.creators.RoverMission;
 import spacemission.factory.creators.SatelliteMission;
 
-public class App {
+public class Client {
 
     public static void main(String[] args) {
         runMission(new RoverMission());
