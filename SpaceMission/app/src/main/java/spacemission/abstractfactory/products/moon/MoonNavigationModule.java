@@ -1,5 +1,5 @@
 package spacemission.abstractfactory.products.moon;
 
-public class MoonNavigatinoModule {
+public class MoonNavigationModule {
     
 }
