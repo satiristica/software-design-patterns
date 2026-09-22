@@ -41,3 +41,19 @@ tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+
+
+
+
+tasks.register<JavaExec>("runFactory") {
+    group = "application"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("spacemission.factory.FactoryShow")
+}
+
+tasks.register<JavaExec>("runAbstractFactory") {
+    group = "application"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("spacemission.abstractfactory.AbstractFactoryShow")
+}
