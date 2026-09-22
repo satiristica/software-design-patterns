@@ -1,5 +1,13 @@
 package spacemission.abstractfactory.products.mars;
 
-public class MarsCommunicationSystem {
-    
+import spacemission.abstractfactory.products.CommunicationSystem;
+
+public class MarsCommunicationSystem implements CommunicationSystem {
+    @Override
+    public String transmit(String data) {
+        if (data == null || data.isBlank()) {
+            throw new IllegalArgumentException("Data can't be empty");
+        }
+        return "Mars sent data: " + data;
+    }
 }
