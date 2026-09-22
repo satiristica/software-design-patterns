@@ -2,6 +2,6 @@ package cryptography;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello, Cryptography!");
+        System.out.println("Hello, world!");
     }
 }
