@@ -12,3 +12,4 @@ plugins {
 
 rootProject.name = "SdpLearningMaterial"
 include("app")
+include("externalexporter")

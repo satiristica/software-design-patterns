@@ -1,5 +1,7 @@
 package sdplearningmaterial.exception;
 
-public class ExportException {
-    
+public class ExportException extends RuntimeException {
+    public ExportException(String message) {
+        super(message);
+    }
 }
