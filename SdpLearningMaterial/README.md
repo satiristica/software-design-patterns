@@ -23,3 +23,4 @@ Choose formats:
 ./gradlew test
 
 ### UML Diagram
+<img width="1173" height="836" alt="umlll" src="https://github.com/user-attachments/assets/082f76dd-2748-4b8c-af29-a088069a050b" />
