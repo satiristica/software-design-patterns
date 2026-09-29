@@ -7,6 +7,10 @@ import sdplearningmaterial.model.MaterialData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+
+import externalexporter.ExternalYamlExporter;
+
+
 class YamlExporterAdapterTest {
     @Test
     void exportsValidData() {
@@ -20,9 +24,17 @@ class YamlExporterAdapterTest {
 
     @Test
     void translatesExternalFailure() {
-        YamlExporterAdapter adapter = new YamlExporterAdapter();
+        ExternalYamlExporter failing = new ExternalYamlExporter() {
+            @Override
+            public String generateDocument(String body, String heading) {
+                return null;
+            }
+        };
+
+        YamlExporterAdapter adapter = new YamlExporterAdapter(failing);
 
         assertThrows(ExportException.class,
-                () -> adapter.export(new MaterialData("", "Definition")));
+                () -> adapter.export(
+                        new MaterialData("Bridge", "Definition")));
     }
 }

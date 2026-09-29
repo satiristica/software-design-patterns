@@ -11,8 +11,17 @@ public class YamlExporterAdapter implements Exporter {
     public String format() {
         return "yaml";
     }
-    
-    private final ExternalYamlExporter external = new ExternalYamlExporter();
+
+    private final ExternalYamlExporter external;
+
+    public YamlExporterAdapter() {
+        this(new ExternalYamlExporter());
+    }
+
+    YamlExporterAdapter(ExternalYamlExporter external) {
+        this.external = external;
+    }
+
 
     @Override
     public String export(MaterialData data) {
