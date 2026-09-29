@@ -6,6 +6,12 @@ import sdplearningmaterial.implementor.Exporter;
 import sdplearningmaterial.model.MaterialData;
 
 public class YamlExporterAdapter implements Exporter {
+
+    @Override
+    public String format() {
+        return "yaml";
+    }
+    
     private final ExternalYamlExporter external = new ExternalYamlExporter();
 
     @Override
