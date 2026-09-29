@@ -17,7 +17,7 @@ Choose formats:
 ./gradlew run --args="json" 
 
 ### YAML 
-./gradlew --args="yaml" 
+./gradlew run --args="yaml" 
 
 ### Tests
 ./gradlew test
