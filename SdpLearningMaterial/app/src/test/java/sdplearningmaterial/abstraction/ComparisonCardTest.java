@@ -13,7 +13,7 @@ class ComparisonCardTest {
                 "Bridge", "Adapter", "They have different purposes");
 
         assertEquals(
-                "Bridge vs Adapter: difference => They have different purposes",
+                "Bridge vs Adapter: difference: They have different purposes",
                 card.export()
         );
     }
