@@ -12,7 +12,7 @@ public abstract class LearningMaterial {
 
     protected abstract MaterialData createData();
 
-    public void export(String filename) {
-        exporter.export(createData(), filename);
+    public String export() {
+        return exporter.export(createData());
     }
 }
