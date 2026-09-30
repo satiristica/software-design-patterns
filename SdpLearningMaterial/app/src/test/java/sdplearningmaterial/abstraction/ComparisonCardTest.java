@@ -5,10 +5,24 @@ import sdplearningmaterial.implementor.Exporter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import sdplearningmaterial.model.MaterialData;
+
+
 class ComparisonCardTest {
     @Test
     void sendsDataToExporter() {
-        Exporter fake = data -> data.getTitle() + ": " + data.getContent();
+        Exporter fake = new Exporter() {
+            @Override
+            public String export(MaterialData data) {
+                return data.getTitle() + ": " + data.getContent();
+            }
+
+            @Override
+            public String format() {
+                return "test";
+            }
+        };
+        
         ComparisonCard card = new ComparisonCard(fake,
                 "Bridge", "Adapter", "They have different purposes");
 
