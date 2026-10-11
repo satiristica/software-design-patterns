@@ -1,4 +1,4 @@
-package org.onlinebank.processing;
+package org.onlinebank.intake;
 
 import java.math.BigDecimal;
 

@@ -1,5 +1,5 @@
 package org.onlinebank.intake;
 
-public class IntakeRepository {
+public class AccountsData {
     
 }
