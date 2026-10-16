@@ -1,5 +1,7 @@
 package org.onlinebank.intake;
 
+import org.onlinebank.exceptions.InsufficientFundsException;
+
 import java.math.BigDecimal;
 
 public class BankAccount {
@@ -41,7 +43,7 @@ public class BankAccount {
 
 
         if (balance.compareTo(amount) < 0) {
-            throw new IllegalStateException("Not enough funds");
+            throw new InsufficientFundsException("Not enough funds");
         }
 
         balance = balance.subtract(amount);

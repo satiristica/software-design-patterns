@@ -3,6 +3,7 @@ package org.onlinebank;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.onlinebank.exceptions.InsufficientFundsException;
 import org.onlinebank.intake.AccountLedger;
 import org.onlinebank.intake.AccountsData;
 import org.onlinebank.intake.BankAccount;
@@ -91,7 +92,7 @@ class AccountLedgerTest {
     @Test
     void insufficientFundsDoesNotCreateHold() {
         assertThrows(
-                IllegalStateException.class,
+                InsufficientFundsException.class,
                 () -> ledger.placeHold(
                         "TR-001",
                         "ACC-001",

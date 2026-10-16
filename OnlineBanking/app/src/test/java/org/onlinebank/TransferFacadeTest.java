@@ -3,6 +3,7 @@ package org.onlinebank;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.onlinebank.exceptions.InsufficientFundsException;
 import org.onlinebank.facade.TransferFacade;
 import org.onlinebank.facade.TransferProcess;
 import org.onlinebank.facade.TransferRepository;
@@ -25,6 +26,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TransferFacadeTest {
 
@@ -156,6 +158,31 @@ class TransferFacadeTest {
         assertSavedState(
                 "10000", TransferProcess.Status.COMPLETED,
                 FundsHold.Status.CAPTURED, RiskCheck.Status.APPROVED
+        );
+    }
+
+    @Test
+    void insufficientFundsLeaveNoHoldOrDownstreamRecords() {
+        assertThrows(
+                InsufficientFundsException.class,
+                () -> facade.transfer(
+                        "TR-001", "ACC-001", new BigDecimal("135000"),
+                        "USD", "US", true
+                )
+        );
+
+        reopenStorage();
+
+        assertEquals(
+                new BigDecimal("100000"),
+                accounts.findAccount("ACC-001").getBalance()
+        );
+        assertNull(accounts.findHold("TR-001"));
+        assertNull(checks.findByTransferId("TR-001"));
+        assertNull(settlements.findByTransferId("TR-001"));
+        assertEquals(
+                TransferProcess.Status.COMPENSATED,
+                transfers.findByTransferId("TR-001").getStatus()
         );
     }
 
