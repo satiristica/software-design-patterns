@@ -1,0 +1,37 @@
+{
+  "accounts": {
+    "ACC-001": {
+      "accountId": "ACC-001",
+      "ownerName": "John",
+      "iban": "DEMO-IBAN-001",
+      "currency": "KZT",
+      "balance": 2000000,
+      "status": "ACTIVE"
+    },
+    "ACC-002": {
+      "accountId": "ACC-002",
+      "ownerName": "Jane",
+      "iban": "DEMO-IBAN-002",
+      "currency": "USD",
+      "balance": 3000,
+      "status": "ACTIVE"
+    },
+    "ACC-003": {
+      "accountId": "ACC-003",
+      "ownerName": "Dexter",
+      "iban": "DEMO-IBAN-003",
+      "currency": "KZT",
+      "balance": 50000,
+      "status": "ACTIVE"
+    },
+    "DEMO-KZT": {
+      "accountId": "DEMO-KZT",
+      "ownerName": "Brian",
+      "iban": "DEMO-IBAN-004",
+      "currency": "KZT",
+      "balance": 2000000,
+      "status": "ACTIVE"
+    }
+  },
+  "holds": {}
+}
