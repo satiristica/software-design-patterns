@@ -18,7 +18,20 @@ class CurrencyExchangeTest {
                 new BigDecimal("90000"), "KZT", "USD"
         );
 
-        assertEquals(new BigDecimal("200"), result);
+        assertEquals(new BigDecimal("200.00"), result);
+    }
+
+    @Test
+    void roundsKztToUsdToTwoDecimalPlaces() {
+        assertEquals(
+                new BigDecimal("222.22"),
+                exchange.convert(new BigDecimal("100000"), "KZT", "USD")
+        );
+
+        assertEquals(
+                new BigDecimal("222.23"),
+                exchange.convert(new BigDecimal("100002"), "KZT", "USD")
+        );
     }
 
     @Test

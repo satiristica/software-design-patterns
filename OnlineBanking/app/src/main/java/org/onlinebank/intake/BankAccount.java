@@ -27,6 +27,10 @@ public class BankAccount {
             String currency,
             BigDecimal balance
     ) {
+        if (balance == null || balance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Balance must not be negative");
+        }
+
         this.accountId = accountId;
         this.ownerName = ownerName;
         this.iban = iban;
@@ -37,6 +41,10 @@ public class BankAccount {
 
 
     public void withdraw(BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+
         if (status != Status.ACTIVE) {
             throw new IllegalStateException("Account is not active");
         }
@@ -51,6 +59,10 @@ public class BankAccount {
 
 
     public void deposit(BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+
         balance = balance.add(amount);
     }
 

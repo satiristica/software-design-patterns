@@ -1,6 +1,7 @@
 package org.onlinebank.intake;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class CurrencyExchange {
 
@@ -23,7 +24,7 @@ public class CurrencyExchange {
 
 
         if (sourceCurrency.equals("KZT")) {
-            return amount.divide(KZT_PER_USD);
+            return amount.divide(KZT_PER_USD, 2, RoundingMode.HALF_UP);
         }
 
 
