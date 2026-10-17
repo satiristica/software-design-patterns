@@ -20,9 +20,11 @@ public class AccountsData {
             .create();
 
 
+            
     public AccountsData() {
         this(Path.of("data", "accounts.json"));
     }
+
 
 
     public AccountsData(Path filePath) {
@@ -30,9 +32,11 @@ public class AccountsData {
     }
 
 
+
     public BankAccount findAccount(String accountId) {
         return load().accounts.get(accountId);
     }
+
 
 
     public FundsHold findHold(String transferId) {
@@ -40,14 +44,17 @@ public class AccountsData {
     }
 
 
+
     public List<BankAccount> getAccounts() {
         return List.copyOf(load().accounts.values());
     }
 
 
+
     public List<FundsHold> getHolds() {
         return List.copyOf(load().holds.values());
     }
+
 
 
     public void saveAccount(BankAccount account) {
@@ -57,6 +64,7 @@ public class AccountsData {
 
         saveData(data);
     }
+
 
 
     public void save(BankAccount account, FundsHold hold) {
@@ -73,6 +81,7 @@ public class AccountsData {
 
         saveData(data);
     }
+
 
 
     private Data load() {
@@ -97,6 +106,7 @@ public class AccountsData {
             );
         }
     }
+
 
 
     private void saveData(Data data) {

@@ -20,9 +20,11 @@ public class ProcessingRepository {
             .create();
 
 
+
     public ProcessingRepository() {
         this(Path.of("data", "risk-checks.json"));
     }
+
 
 
     public ProcessingRepository(Path filePath) {
@@ -30,11 +32,13 @@ public class ProcessingRepository {
     }
 
 
+
     public RiskCheck findByTransferId(String transferId) {
         return load().checks.get(transferId);
     }
 
 
+    
     public void save(RiskCheck check) {
         Data data = load();
 
@@ -49,6 +53,7 @@ public class ProcessingRepository {
             );
         }
     }
+
 
 
     private Data load() {

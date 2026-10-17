@@ -32,6 +32,7 @@ public class FundsHold {
     }
 
 
+    
     public void place() {
         if (status != Status.NEW) {
             throw new IllegalStateException("Only new holds can be placed");

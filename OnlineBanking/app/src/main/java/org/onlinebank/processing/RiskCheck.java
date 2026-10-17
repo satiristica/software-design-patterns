@@ -36,6 +36,7 @@ public class RiskCheck {
         status = Status.APPROVED;
     }
 
+    
 
     public void reject(String reason) {
         if (status != Status.PENDING) {
@@ -45,6 +46,7 @@ public class RiskCheck {
         this.reason = reason;
         status = Status.REJECTED;
     }
+
 
 
     public void revoke(String reason) {
@@ -57,6 +59,7 @@ public class RiskCheck {
     }
 
 
+    
     public String getTransferId() {
         return transferId;
     }

@@ -17,6 +17,7 @@ public class ComplianceChecker {
     }
 
 
+    
     public RiskCheck checkTransfer(
             String transferId,
             BigDecimal amountInKzt,
@@ -54,6 +55,7 @@ public class ComplianceChecker {
     }
 
     
+
     public void revokeApproval(String transferId) {
         RiskCheck check = repository.findByTransferId(transferId);
 

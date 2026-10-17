@@ -16,6 +16,7 @@ public class AccountLedger {
         this.currencyExchange = currencyExchange;
     }
 
+    
 
     public BigDecimal convert(
             String accountId,
@@ -30,6 +31,7 @@ public class AccountLedger {
                 targetCurrency
         );
     }
+
 
 
     public FundsHold placeHold(
@@ -57,6 +59,7 @@ public class AccountLedger {
     }
 
 
+
     public void captureHold(String transferId) {
         FundsHold hold = requireHold(transferId);
 
@@ -69,6 +72,7 @@ public class AccountLedger {
         hold.capture();
         accountsData.save(account, hold);
     }
+
 
 
     public void releaseHold(String transferId) {
@@ -87,6 +91,7 @@ public class AccountLedger {
     }
 
 
+
     private BankAccount requireAccount(String accountId) {
         BankAccount account = accountsData.findAccount(accountId);
 
@@ -96,6 +101,7 @@ public class AccountLedger {
 
         return account;
     }
+
 
 
     private FundsHold requireHold(String transferId) {

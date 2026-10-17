@@ -26,6 +26,8 @@ public class BankOperations {
         );
     }
 
+
+
     public BankOperations(
             AccountsData accounts,
             ProcessingRepository checks,
@@ -38,6 +40,8 @@ public class BankOperations {
         this.transfers = transfers;
     }
 
+
+
     public BigDecimal getBalance(String accountId) {
         BankAccount account = accounts.findAccount(accountId);
 
@@ -47,6 +51,8 @@ public class BankOperations {
 
         return account.getBalance();
     }
+
+
 
     public String inspectTransfer(String transferId) {
         TransferProcess process = transfers.findByTransferId(transferId);
@@ -82,7 +88,7 @@ public class BankOperations {
         } else {
             settlementStatus = settlement.getStatus().name();
         }
-
+        
         return "Transfer: " + process.getTransferId()
                 + "\nAccount: " + process.getAccountId()
                 + "\nAmount: " + process.getAmount()

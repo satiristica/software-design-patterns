@@ -15,9 +15,11 @@ public class FinalizationRepository {
     private final Path filePath;
 
     
+    
     private final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .create();
+
 
 
     public FinalizationRepository() {
@@ -25,9 +27,11 @@ public class FinalizationRepository {
     }
 
 
+
     public FinalizationRepository(Path filePath) {
         this.filePath = filePath.toAbsolutePath();
     }
+
 
 
     public Settlement findByTransferId(String transferId) {
@@ -35,6 +39,7 @@ public class FinalizationRepository {
     }
 
     
+
     public void save(Settlement settlement) {
         Data data = load();
 
@@ -49,6 +54,7 @@ public class FinalizationRepository {
             );
         }
     }
+
 
 
     private Data load() {

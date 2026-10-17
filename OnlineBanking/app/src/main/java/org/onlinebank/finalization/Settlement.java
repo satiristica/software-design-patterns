@@ -19,6 +19,7 @@ public class Settlement {
     private String reason;
 
 
+    
     public Settlement(String transferId, BigDecimal amount, String currency) {
         if (transferId == null || transferId.isBlank()) {
             throw new IllegalArgumentException("Transfer ID is required");
@@ -40,6 +41,7 @@ public class Settlement {
     }
 
 
+
     public void confirm() {
         if (status != Status.PENDING) {
             throw new IllegalStateException(
@@ -49,6 +51,7 @@ public class Settlement {
 
         status = Status.CONFIRMED;
     }
+
 
 
     public void fail(String reason) {
@@ -61,6 +64,7 @@ public class Settlement {
         this.reason = reason;
         status = Status.FAILED;
     }
+
 
 
     public String getTransferId() {

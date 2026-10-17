@@ -23,9 +23,11 @@ public class TransferRepository {
     }
 
 
+    
     public TransferRepository(Path filePath) {
         this.filePath = filePath.toAbsolutePath();
     }
+
 
 
     public void save(TransferProcess process) {
@@ -41,9 +43,11 @@ public class TransferRepository {
     }
 
 
+
     public TransferProcess findByTransferId(String transferId) {
         return load().transfers.get(transferId);
     }
+
 
 
     private Data load() {

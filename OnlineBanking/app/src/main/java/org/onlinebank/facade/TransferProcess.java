@@ -54,10 +54,12 @@ public class TransferProcess {
         this.status = Status.NEW;
     }
 
+
     
     public void intakeCompleted() {
         changeStatus(Status.NEW, Status.PENDING_B);
     }
+
 
 
     public void processingCompleted() {
@@ -65,9 +67,11 @@ public class TransferProcess {
     }
 
 
+
     public void complete() {
         changeStatus(Status.PENDING_C, Status.COMPLETED);
     }
+
 
 
     public void startCompensation() {
@@ -83,9 +87,11 @@ public class TransferProcess {
     }
 
 
+
     public void finishCompensation() {
         changeStatus(Status.COMPENSATING, Status.COMPENSATED);
     }
+
 
 
     private void changeStatus(Status expected, Status next) {
@@ -99,6 +105,7 @@ public class TransferProcess {
     }
 
 
+
     private static void requireText(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(
@@ -106,6 +113,7 @@ public class TransferProcess {
             );
         }
     }
+
 
 
     public String getTransferId() {
