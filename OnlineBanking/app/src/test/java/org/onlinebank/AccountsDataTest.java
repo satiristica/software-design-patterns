@@ -23,17 +23,15 @@ class AccountsDataTest {
         AccountsData data = new AccountsData(file);
 
         BankAccount account = accountWithBalance("100000");
-        account.freeze();
 
         data.saveAccount(account);
 
         AccountsData reopened = new AccountsData(file);
         BankAccount restored = reopened.findAccount("ACC-001");
 
-        assertEquals("John", restored.getOwnerName());
+        assertEquals("ACC-001", restored.getAccountId());
         assertEquals("KZT", restored.getCurrency());
         assertEquals(new BigDecimal("100000"), restored.getBalance());
-        assertEquals(BankAccount.Status.FROZEN, restored.getStatus());
     }
 
     @Test
@@ -90,7 +88,6 @@ class AccountsDataTest {
     private BankAccount accountWithBalance(String balance) {
         return new BankAccount(
                 "ACC-001",
-                "John",
                 "KZT",
                 new BigDecimal(balance)
         );

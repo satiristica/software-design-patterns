@@ -2,31 +2,23 @@
   "accounts": {
     "ACC-001": {
       "accountId": "ACC-001",
-      "ownerName": "John",
       "currency": "KZT",
-      "balance": 2000000,
-      "status": "ACTIVE"
+      "balance": 2000000
     },
     "ACC-002": {
       "accountId": "ACC-002",
-      "ownerName": "Jane",
       "currency": "USD",
-      "balance": 3000,
-      "status": "ACTIVE"
+      "balance": 3000
     },
     "ACC-003": {
       "accountId": "ACC-003",
-      "ownerName": "Dexter",
       "currency": "KZT",
-      "balance": 50000,
-      "status": "ACTIVE"
+      "balance": 50000
     },
     "DEMO-KZT": {
       "accountId": "DEMO-KZT",
-      "ownerName": "Brian",
       "currency": "KZT",
-      "balance": 2000000,
-      "status": "ACTIVE"
+      "balance": 2000000
     }
   },
   "holds": {}

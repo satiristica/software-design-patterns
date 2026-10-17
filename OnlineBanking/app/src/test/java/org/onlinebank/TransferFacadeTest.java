@@ -8,7 +8,6 @@ import org.onlinebank.facade.TransferFacade;
 import org.onlinebank.facade.TransferProcess;
 import org.onlinebank.facade.TransferRepository;
 import org.onlinebank.finalization.FinalizationRepository;
-import org.onlinebank.finalization.NotificationService;
 import org.onlinebank.finalization.Settlement;
 import org.onlinebank.intake.AccountLedger;
 import org.onlinebank.intake.AccountsData;
@@ -43,7 +42,7 @@ class TransferFacadeTest {
         reopenStorage();
 
         accounts.saveAccount(new BankAccount(
-                "ACC-001", "John", "KZT",
+                "ACC-001", "KZT",
                 new BigDecimal("100000")
         ));
 
@@ -185,6 +184,146 @@ class TransferFacadeTest {
         );
     }
 
+    @Test
+    void startedTransferResumesAfterRestartWithoutWithdrawingTwice() {
+        TransferProcess started = facade.start(
+                "TR-001", "ACC-001", new BigDecimal("90000"), "USD", "US"
+        );
+
+        assertEquals(TransferProcess.Status.PENDING_B, started.getStatus());
+        reopenStorage();
+        assertEquals(new BigDecimal("10000"), accounts.findAccount("ACC-001").getBalance());
+        assertEquals(FundsHold.Status.HELD, accounts.findHold("TR-001").getStatus());
+        assertNull(checks.findByTransferId("TR-001"));
+        assertNull(settlements.findByTransferId("TR-001"));
+
+        facade = createFacade();
+        facade.resume("TR-001", true);
+        facade.resume("TR-001", true);
+
+        assertSavedState(
+                "10000", TransferProcess.Status.COMPLETED,
+                FundsHold.Status.CAPTURED, RiskCheck.Status.APPROVED
+        );
+        assertEquals(Settlement.Status.CONFIRMED,
+                settlements.findByTransferId("TR-001").getStatus());
+    }
+
+    @Test
+    void resumesWhenHoldWasSavedBeforeProgress() {
+        transfers.save(new TransferProcess(
+                "TR-001", "ACC-001", new BigDecimal("90000"),
+                new BigDecimal("200.00"), "KZT", "USD", "US"
+        ));
+        new AccountLedger(accounts, new CurrencyExchange()).placeHold(
+                "TR-001", "ACC-001", new BigDecimal("90000")
+        );
+
+        reopenStorage();
+        facade = createFacade();
+        facade.resume("TR-001", true);
+
+        assertSavedState(
+                "10000", TransferProcess.Status.COMPLETED,
+                FundsHold.Status.CAPTURED, RiskCheck.Status.APPROVED
+        );
+    }
+
+    @Test
+    void resumesWhenApprovalWasSavedBeforeProgress() {
+        facade.start("TR-001", "ACC-001", new BigDecimal("90000"), "USD", "US");
+        new ComplianceChecker(checks, new FraudDetector()).checkTransfer(
+                "TR-001", new BigDecimal("90000"), "US"
+        );
+
+        reopenStorage();
+        facade = createFacade();
+        facade.resume("TR-001", true);
+
+        assertSavedState(
+                "10000", TransferProcess.Status.COMPLETED,
+                FundsHold.Status.CAPTURED, RiskCheck.Status.APPROVED
+        );
+    }
+
+    @Test
+    void confirmedSettlementSurvivesRestartEvenWhenNetworkIsNowUnavailable() {
+        TransferProcess process = saveApprovedTransfer();
+        Settlement settlement = new Settlement(
+                "TR-001", process.getConvertedAmount(), process.getTargetCurrency()
+        );
+        settlement.confirm();
+        settlements.save(settlement);
+
+        reopenStorage();
+        facade = createFacade();
+        facade.resume("TR-001", false);
+
+        assertSavedState(
+                "10000", TransferProcess.Status.COMPLETED,
+                FundsHold.Status.CAPTURED, RiskCheck.Status.APPROVED
+        );
+        assertEquals(Settlement.Status.CONFIRMED,
+                settlements.findByTransferId("TR-001").getStatus());
+    }
+
+    @Test
+    void resumesCompensationAfterApprovalWasAlreadyRevoked() {
+        TransferProcess process = saveApprovedTransfer();
+        process.startCompensation();
+        transfers.save(process);
+        new ComplianceChecker(checks, new FraudDetector()).revokeApproval("TR-001");
+
+        reopenStorage();
+        facade = createFacade();
+        facade.resume("TR-001", true);
+        facade.resume("TR-001", true);
+
+        assertSavedState(
+                "100000", TransferProcess.Status.COMPENSATED,
+                FundsHold.Status.RELEASED, RiskCheck.Status.REVOKED
+        );
+        assertNull(settlements.findByTransferId("TR-001"));
+    }
+
+    @Test
+    void rejectsDuplicateTransferWithoutChangingTheExistingHold() {
+        facade.start("TR-001", "ACC-001", new BigDecimal("90000"), "USD", "US");
+
+        assertThrows(IllegalArgumentException.class, () -> facade.start(
+                "TR-001", "ACC-001", new BigDecimal("1000"), "USD", "US"
+        ));
+
+        assertEquals(new BigDecimal("10000"), accounts.findAccount("ACC-001").getBalance());
+        assertEquals(new BigDecimal("90000"), accounts.findHold("TR-001").getAmount());
+        assertEquals(TransferProcess.Status.PENDING_B,
+                transfers.findByTransferId("TR-001").getStatus());
+    }
+
+    @Test
+    void rejectsUnknownAccountAndUnknownTransfer() {
+        assertThrows(IllegalArgumentException.class, () -> facade.start(
+                "TR-001", "missing", new BigDecimal("90000"), "USD", "US"
+        ));
+        assertThrows(IllegalArgumentException.class, () -> facade.resume("missing", true));
+
+        assertNull(transfers.findByTransferId("TR-001"));
+        assertNull(accounts.findHold("TR-001"));
+        assertEquals(new BigDecimal("100000"), accounts.findAccount("ACC-001").getBalance());
+    }
+
+    private TransferProcess saveApprovedTransfer() {
+        TransferProcess process = facade.start(
+                "TR-001", "ACC-001", new BigDecimal("90000"), "USD", "US"
+        );
+        new ComplianceChecker(checks, new FraudDetector()).checkTransfer(
+                "TR-001", process.getAmount(), "US"
+        );
+        process.processingCompleted();
+        transfers.save(process);
+        return process;
+    }
+
     private void reopenStorage() {
         accounts = new AccountsData(
                 directory.resolve("accounts.json")
@@ -208,8 +347,7 @@ class TransferFacadeTest {
                 accounts,
                 checks,
                 settlements,
-                transfers,
-                new NotificationService()
+                transfers
         );
     }
 

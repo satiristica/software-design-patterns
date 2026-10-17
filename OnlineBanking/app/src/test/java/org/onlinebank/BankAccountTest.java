@@ -15,7 +15,6 @@ class BankAccountTest {
     void withdrawReducesBalance() {
         BankAccount account = new BankAccount(
                 "ACC-001",
-                "John",
                 "KZT",
                 new BigDecimal("100000")
         );
@@ -28,7 +27,7 @@ class BankAccountTest {
     @Test
     void insufficientFundsDoNotChangeBalance() {
         BankAccount account = new BankAccount(
-                "ACC-001", "John", "KZT",
+                "ACC-001", "KZT",
                 new BigDecimal("100000")
         );
 
@@ -75,7 +74,7 @@ class BankAccountTest {
 
     private BankAccount accountWithBalance(BigDecimal balance) {
         return new BankAccount(
-                "ACC-001", "John", "KZT", balance
+                "ACC-001", "KZT", balance
         );
     }
 }

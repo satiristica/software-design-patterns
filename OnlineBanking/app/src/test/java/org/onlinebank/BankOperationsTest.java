@@ -8,7 +8,6 @@ import org.onlinebank.facade.TransferFacade;
 import org.onlinebank.facade.TransferProcess;
 import org.onlinebank.facade.TransferRepository;
 import org.onlinebank.finalization.FinalizationRepository;
-import org.onlinebank.finalization.NotificationService;
 import org.onlinebank.intake.AccountsData;
 import org.onlinebank.intake.BankAccount;
 import org.onlinebank.processing.ProcessingRepository;
@@ -52,7 +51,7 @@ class BankOperationsTest {
         );
 
         accounts.saveAccount(new BankAccount(
-                "ACC-001", "John", "KZT",
+                "ACC-001", "KZT",
                 new BigDecimal("100000")
         ));
     }
@@ -101,8 +100,7 @@ class BankOperationsTest {
                 accounts,
                 checks,
                 settlements,
-                transfers,
-                new NotificationService(message -> {})
+                transfers
         );
 
         facade.transfer(

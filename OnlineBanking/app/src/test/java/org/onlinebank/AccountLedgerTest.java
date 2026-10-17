@@ -35,7 +35,6 @@ class AccountLedgerTest {
 
         BankAccount account = new BankAccount(
                 "ACC-001",
-                "John",
                 "KZT",
                 new BigDecimal("100000")
         );
