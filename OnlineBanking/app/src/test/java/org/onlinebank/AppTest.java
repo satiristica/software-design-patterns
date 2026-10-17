@@ -53,6 +53,17 @@ class AppTest {
         );
     }
 
+    @Test
+    void startOnlyAUsesTheSameInputValidation() {
+        String output = runApp("1\n5\nACC-001\nabc\n0\n");
+
+        assertTrue(output.contains("5. Start only A (resume later)"));
+        assertTrue(output.contains("Sender account ID:"));
+        assertTrue(output.contains("Amount in account currency:"));
+        assertTrue(output.contains("Operation failed:"));
+        assertFalse(output.contains("Result: PENDING_B"));
+    }
+
     private String runApp(String input) {
         InputStream originalInput = System.in;
         PrintStream originalOutput = System.out;
