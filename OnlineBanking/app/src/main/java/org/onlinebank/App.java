@@ -15,9 +15,8 @@ public class App {
     private static final BankOperations admin = new BankOperations();
 
     public static void main(String[] args) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            cli(scanner);
-        }
+        Scanner sc = new Scanner(System.in);
+        cli(sc);
     }
 
 
@@ -33,20 +32,31 @@ public class App {
                 return;
             }
 
-            try {
-                switch (scanner.nextLine().trim()) {
-                    case "1" -> clientMenu(scanner);
-                    case "2" -> adminMenu(scanner);
-                    case "0" -> { return; }
-                    default -> System.out.println("Unknown option.");
-                }
-            } catch (InsufficientFundsException e) {
-                System.out.println("Transfer declined: " + e.getMessage());
-            } catch (RuntimeException e) {
-                System.out.println("Operation failed: " + e.getMessage());
+        try {
+            String input = scanner.nextLine().trim();
+
+            if ("1".equals(input)) {
+                clientMenu(scanner);
+            } 
+            else if ("2".equals(input)) {
+                adminMenu(scanner);
+            } 
+            else if ("0".equals(input)) {
+                return;
+            } 
+            else {
+                System.out.println("Unknown option.");
             }
+        } 
+
+        catch (InsufficientFundsException e) {
+            System.out.println("Transfer declined: " + e.getMessage());
+        } 
+        catch (RuntimeException e) {
+            System.out.println("Operation failed: " + e.getMessage());
         }
     }
+}
 
 
 
@@ -59,19 +69,23 @@ public class App {
         System.out.println("5. Start only A (resume later)");
         System.out.println("0. Back");
 
-        switch (readText(scanner, "Choose: ")) {
-            case "1" -> newTransfer(scanner, false);
-            case "2" -> {
-                TransferProcess process = transfers.resume(
-                        readText(scanner, "Transfer ID: "), true
-                );
-                System.out.println("Status: " + process.getStatus());
-            }
-            case "3" -> demoTransfer("XZ", true);
-            case "4" -> demoTransfer("US", false);
-            case "5" -> newTransfer(scanner, true);
-            case "0" -> { return; }
-            default -> throw new IllegalArgumentException("Unknown option");
+        String choice = readText(scanner, "Choose: ");
+
+        if ("1".equals(choice)) {
+            newTransfer(scanner, false);
+        } else if ("2".equals(choice)) {
+            TransferProcess process = transfers.resume(readText(scanner, "Transfer ID: "), true);
+            System.out.println("Status: " + process.getStatus());
+        } else if ("3".equals(choice)) {
+            demoTransfer("XZ", true);
+        } else if ("4".equals(choice)) {
+            demoTransfer("US", false);
+        } else if ("5".equals(choice)) {
+            newTransfer(scanner, true);
+        } else if ("0".equals(choice)) {
+            return;
+        } else {
+            throw new IllegalArgumentException("Unknown option");
         }
     }
 
@@ -88,6 +102,7 @@ public class App {
         System.out.println("Transfer ID: " + id);
 
         TransferProcess process;
+
         if (stopAfterIntake) {
             process = transfers.start(id, accountId, amount, targetCurrency, country);
         } else {
@@ -95,7 +110,7 @@ public class App {
         }
         System.out.println("Result: " + process.getStatus());
     }
-
+    
 
 
     private static void demoTransfer(String country, boolean networkAvailable) {

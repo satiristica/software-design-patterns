@@ -3,7 +3,7 @@
     "ACC-001": {
       "accountId": "ACC-001",
       "currency": "KZT",
-      "balance": 2000000
+      "balance": 1500000
     },
     "ACC-002": {
       "accountId": "ACC-002",
@@ -21,5 +21,12 @@
       "balance": 2000000
     }
   },
-  "holds": {}
+  "holds": {
+    "TR-a439a8de-129c-42e6-9144-642fe45c8a83": {
+      "transferId": "TR-a439a8de-129c-42e6-9144-642fe45c8a83",
+      "accountId": "ACC-001",
+      "amount": 500000,
+      "status": "CAPTURED"
+    }
+  }
 }

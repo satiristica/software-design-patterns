@@ -70,8 +70,7 @@ class AccountLedgerTest {
                 FundsHold.Status.CAPTURED,
                 data.findHold("TR-001").getStatus()
         );
-    }
-
+}
     
     @Test
     void releasingHoldReturnsMoney() {

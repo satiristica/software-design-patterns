@@ -1,3 +1,9 @@
 {
-  "checks": {}
+  "checks": {
+    "TR-a439a8de-129c-42e6-9144-642fe45c8a83": {
+      "transferId": "TR-a439a8de-129c-42e6-9144-642fe45c8a83",
+      "status": "APPROVED",
+      "reason": ""
+    }
+  }
 }
