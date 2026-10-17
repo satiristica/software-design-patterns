@@ -16,7 +16,6 @@ class BankAccountTest {
         BankAccount account = new BankAccount(
                 "ACC-001",
                 "John",
-                "DEMO-IBAN",
                 "KZT",
                 new BigDecimal("100000")
         );
@@ -29,7 +28,7 @@ class BankAccountTest {
     @Test
     void insufficientFundsDoNotChangeBalance() {
         BankAccount account = new BankAccount(
-                "ACC-001", "John", "DEMO-IBAN", "KZT",
+                "ACC-001", "John", "KZT",
                 new BigDecimal("100000")
         );
 
@@ -76,7 +75,7 @@ class BankAccountTest {
 
     private BankAccount accountWithBalance(BigDecimal balance) {
         return new BankAccount(
-                "ACC-001", "John", "DEMO-IBAN", "KZT", balance
+                "ACC-001", "John", "KZT", balance
         );
     }
 }

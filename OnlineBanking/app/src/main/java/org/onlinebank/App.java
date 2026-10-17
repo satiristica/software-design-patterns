@@ -20,6 +20,7 @@ public class App {
         }
     }
 
+
     private static void cli(Scanner scanner) {
         while (true) {
             System.out.println("\nOnline Banking");
@@ -60,7 +61,7 @@ public class App {
         System.out.println("0. Back");
 
         String accountId = "DEMO-KZT";
-        BigDecimal amount = new BigDecimal("90000");
+        BigDecimal amount = new BigDecimal("250000");
         String targetCurrency = "USD";
         String country = "US";
         boolean networkAvailable = true;
@@ -93,7 +94,7 @@ public class App {
 
             case "3" -> {
                 System.out.println(
-                        "Demo: 90000 KZT from DEMO-KZT, restricted country XZ."
+                        "Demo: 90000 KZT but restricted country XZ."
                 );
 
                 country = "XZ";
@@ -101,7 +102,7 @@ public class App {
 
             case "4" -> {
                 System.out.println(
-                        "Demo: 90000 KZT from DEMO-KZT, settlement network unavailable."
+                        "Demo: 90000 KZT, settlement network unavailable."
                 );
 
                 networkAvailable = false;

@@ -7,7 +7,6 @@ import org.onlinebank.facade.BankOperations;
 import org.onlinebank.facade.TransferFacade;
 import org.onlinebank.facade.TransferProcess;
 import org.onlinebank.facade.TransferRepository;
-import org.onlinebank.finalization.AuditLogger;
 import org.onlinebank.finalization.FinalizationRepository;
 import org.onlinebank.finalization.NotificationService;
 import org.onlinebank.intake.AccountsData;
@@ -53,7 +52,7 @@ class BankOperationsTest {
         );
 
         accounts.saveAccount(new BankAccount(
-                "ACC-001", "John", "DEMO-IBAN", "KZT",
+                "ACC-001", "John", "KZT",
                 new BigDecimal("100000")
         ));
     }
@@ -103,7 +102,6 @@ class BankOperationsTest {
                 checks,
                 settlements,
                 transfers,
-                new AuditLogger(directory.resolve("audit.json")),
                 new NotificationService(message -> {})
         );
 

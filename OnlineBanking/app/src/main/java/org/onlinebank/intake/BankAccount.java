@@ -14,7 +14,6 @@ public class BankAccount {
 
     private final String accountId;
     private final String ownerName;
-    private final String iban;
     private final String currency;
 
     private BigDecimal balance;
@@ -23,7 +22,6 @@ public class BankAccount {
     public BankAccount(
             String accountId,
             String ownerName,
-            String iban,
             String currency,
             BigDecimal balance
     ) {
@@ -33,7 +31,6 @@ public class BankAccount {
 
         this.accountId = accountId;
         this.ownerName = ownerName;
-        this.iban = iban;
         this.currency = currency;
         this.balance = balance;
         this.status = Status.ACTIVE;
@@ -97,11 +94,6 @@ public class BankAccount {
 
     public String getOwnerName() {
         return ownerName;
-    }
-
-
-    public String getIban() {
-        return iban;
     }
 
 
