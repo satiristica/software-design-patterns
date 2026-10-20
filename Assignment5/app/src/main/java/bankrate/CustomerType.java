@@ -1,4 +1,7 @@
 package bankrate;
 
-public class CustomerType {
+public enum CustomerType {
+    DEFAULT,
+    BROKER,
+    ELITE
 }

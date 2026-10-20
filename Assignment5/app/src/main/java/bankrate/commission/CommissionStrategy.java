@@ -1,5 +1,5 @@
 package bankrate.commission;
 
-public class CommissionStrategy {
+public interface CommissionStrategy {
     
 }

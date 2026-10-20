@@ -1,5 +1,5 @@
 package bankrate.commission;
 
-public class ThresholdCommission {
+public class ThresholdCommission implements CommissionStrategy {
     
 }
