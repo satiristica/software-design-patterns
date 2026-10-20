@@ -1,6 +1,5 @@
 package bankrate.bonus;
 
-
-public class BonusStrategy {
-    
+public interface BonusStrategy {
+    int calculate(double amount);
 }
