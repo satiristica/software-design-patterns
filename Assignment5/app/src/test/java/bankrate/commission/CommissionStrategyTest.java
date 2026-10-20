@@ -4,6 +4,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import bankrate.CustomerType;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 class CommissionStrategyTest {
 
     @Test
@@ -38,4 +45,15 @@ class CommissionStrategyTest {
         assertEquals(0, context.calculate(5000), 0.001);
         assertEquals(0, context.calculate(10000), 0.001);
     }
+
+
+    @ParameterizedTest
+    @EnumSource(CustomerType.class)
+    void commissionIsNotNegative(CustomerType type) {
+        CommissionSelector selector = new CommissionSelector();
+        CommissionStrategy strategy = selector.select(type);
+
+        assertTrue(strategy.calculate(12000) >= 0);
+    }
+
 }
