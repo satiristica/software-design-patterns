@@ -1,4 +1,5 @@
 package bankrate.data;
-public class BonusProvider {
-    
+
+public interface BonusProvider {
+    int getBonus();
 }
