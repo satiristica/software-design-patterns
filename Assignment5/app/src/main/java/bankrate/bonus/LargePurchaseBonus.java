@@ -12,7 +12,11 @@ public class LargePurchaseBonus implements BonusStrategy {
 
     @Override
     public int calculate(double amount) {
-        if (amount > 10000) {
+        if (amount > 10000 && amount < 16000) {
+            return provider.getBonus();
+        }   
+        
+        if (amount > 16500) {
             return provider.getBonus();
         }
 

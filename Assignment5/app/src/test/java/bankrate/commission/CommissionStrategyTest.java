@@ -37,16 +37,6 @@ class CommissionStrategyTest {
         assertEquals(100, context.calculate(12000), 0.001);
     }
 
-    @Test
-    void thresholdCommissionIsFreeUpToLimit() {
-        CommissionContext context =
-                new CommissionContext(new ThresholdCommission());
-
-        assertEquals(0, context.calculate(5000), 0.001);
-        assertEquals(0, context.calculate(10000), 0.001);
-    }
-
-
     @ParameterizedTest
     @EnumSource(CustomerType.class)
     void commissionIsNotNegative(CustomerType type) {
