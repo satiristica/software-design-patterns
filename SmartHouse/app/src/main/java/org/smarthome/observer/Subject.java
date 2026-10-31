@@ -1,0 +1,9 @@
+package org.smarthome.observer;
+
+public interface Subject<E extends Event> {
+    void subscribe(EventType type, Observer<E> observer);
+
+    void unsubscribe(EventType type, Observer<E> observer);
+
+    void publish(E event);
+}
