@@ -1,6 +1,7 @@
 package org.smarthome.observer;
 
 import org.junit.jupiter.api.Test;
+import org.smarthome.source.EventSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,106 +9,132 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ObserverTest {
-    private final Subject<HomeEvent> subject = new ConcurrentSubject<>();
-    private final List<HomeEvent> received = new ArrayList<>();
-    private final HomeEvent motion =
-            new HomeEvent(EventType.MOTION_DETECTED, "room-1", "camera-1", 1);
-    private final HomeEvent temperature =
-            new HomeEvent(EventType.TEMPERATURE_CHANGED, "room-1", "thermostat-1", 22);
+    private final Subject<HomeEvent> subject = new EventSource();
+    private final RecordingObserver observer = new RecordingObserver();
+    private final HomeEvent deviceEvent =
+            new HomeEvent(EventType.DEVICE_STATE_CHANGED, "room-1", "kettle-1", 1500);
+    private final HomeEvent summary =
+            new HomeEvent(EventType.ROOM_SUMMARY, "room-1", "room-aggregator", 1500);
 
     @Test
     void deliversEvent() {
-        subject.subscribe(EventType.MOTION_DETECTED, received::add);
+        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
 
-        subject.publish(motion);
+        subject.publish(deviceEvent);
 
-        assertEquals(1, received.size());
-        assertSame(motion, received.get(0));
+        assertEquals(1, observer.received.size());
+        assertSame(deviceEvent, observer.received.get(0));
     }
 
     @Test
     void ignoresOtherEventTypes() {
-        subject.subscribe(EventType.MOTION_DETECTED, received::add);
+        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
 
-        subject.publish(temperature);
+        subject.publish(summary);
 
-        assertTrue(received.isEmpty());
+        assertTrue(observer.received.isEmpty());
     }
 
     @Test
     void notifiesAllListeners() {
-        List<HomeEvent> otherReceived = new ArrayList<>();
-        subject.subscribe(EventType.MOTION_DETECTED, received::add);
-        subject.subscribe(EventType.MOTION_DETECTED, otherReceived::add);
+        RecordingObserver other = new RecordingObserver();
+        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
+        subject.subscribe(EventType.DEVICE_STATE_CHANGED, other);
 
-        subject.publish(motion);
+        subject.publish(deviceEvent);
 
-        assertEquals(List.of(motion), received);
-        assertEquals(List.of(motion), otherReceived);
+        assertEquals(List.of(deviceEvent), observer.received);
+        assertEquals(List.of(deviceEvent), other.received);
     }
 
     @Test
     void preventsDuplicateSubscriptions() {
-        Observer<HomeEvent> observer = received::add;
-        subject.subscribe(EventType.MOTION_DETECTED, observer);
-        subject.subscribe(EventType.MOTION_DETECTED, observer);
+        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
+        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
 
-        subject.publish(motion);
+        subject.publish(deviceEvent);
 
-        assertEquals(List.of(motion), received);
+        assertEquals(List.of(deviceEvent), observer.received);
     }
 
     @Test
     void stopsDeliveryAfterUnsubscribe() {
-        Observer<HomeEvent> observer = received::add;
-        subject.subscribe(EventType.MOTION_DETECTED, observer);
-        subject.unsubscribe(EventType.MOTION_DETECTED, observer);
+        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
+        subject.unsubscribe(EventType.DEVICE_STATE_CHANGED, observer);
 
-        subject.publish(motion);
+        subject.publish(deviceEvent);
 
-        assertTrue(received.isEmpty());
+        assertTrue(observer.received.isEmpty());
     }
 
     @Test
     void allowsUnsubscribeInsideHandler() {
-        Observer<HomeEvent> observer = new Observer<HomeEvent>() {
+        subject.subscribe(EventType.DEVICE_STATE_CHANGED, new Observer<HomeEvent>() {
             @Override
             public void onEvent(HomeEvent event) {
-                received.add(event);
+                observer.onEvent(event);
                 subject.unsubscribe(event.type(), this);
             }
-        };
-        subject.subscribe(EventType.MOTION_DETECTED, observer);
+        });
 
-        subject.publish(motion);
-        subject.publish(motion);
+        subject.publish(deviceEvent);
+        subject.publish(deviceEvent);
 
-        assertEquals(List.of(motion), received);
+        assertEquals(List.of(deviceEvent), observer.received);
     }
 
     @Test
     void subscriptionInsideHandlerStartsWithNextEvent() {
-        Observer<HomeEvent> added = received::add;
-        subject.subscribe(EventType.MOTION_DETECTED,
-                event -> subject.subscribe(EventType.MOTION_DETECTED, added));
+        subject.subscribe(EventType.DEVICE_STATE_CHANGED, new Observer<HomeEvent>() {
+            @Override
+            public void onEvent(HomeEvent event) {
+                subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
+            }
+        });
 
-        subject.publish(motion);
-        assertTrue(received.isEmpty());
+        subject.publish(deviceEvent);
+        assertTrue(observer.received.isEmpty());
 
-        subject.publish(motion);
-        assertEquals(List.of(motion), received);
+        subject.publish(deviceEvent);
+        assertEquals(List.of(deviceEvent), observer.received);
     }
 
     @Test
     void unsubscribeKeepsOtherEventSubscriptions() {
-        Observer<HomeEvent> observer = received::add;
-        subject.subscribe(EventType.MOTION_DETECTED, observer);
-        subject.subscribe(EventType.TEMPERATURE_CHANGED, observer);
-        subject.unsubscribe(EventType.MOTION_DETECTED, observer);
+        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
+        subject.subscribe(EventType.ROOM_SUMMARY, observer);
+        subject.unsubscribe(EventType.DEVICE_STATE_CHANGED, observer);
 
-        subject.publish(motion);
-        subject.publish(temperature);
+        subject.publish(deviceEvent);
+        subject.publish(summary);
 
-        assertEquals(List.of(temperature), received);
+        assertEquals(List.of(summary), observer.received);
+    }
+
+    @Test
+    void keepsEventSourcesIndependent() {
+        Subject<HomeEvent> otherSource = new EventSource();
+        RecordingObserver other = new RecordingObserver();
+        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
+        otherSource.subscribe(EventType.DEVICE_STATE_CHANGED, other);
+
+        subject.publish(deviceEvent);
+        assertEquals(List.of(deviceEvent), observer.received);
+        assertTrue(other.received.isEmpty());
+
+        HomeEvent tvEvent = new HomeEvent(
+                EventType.DEVICE_STATE_CHANGED, "room-2", "tv-1", 100);
+        otherSource.publish(tvEvent);
+        assertEquals(List.of(deviceEvent), observer.received);
+        assertEquals(List.of(tvEvent), other.received);
+    }
+
+    private static class RecordingObserver implements Observer<HomeEvent> {
+        private final List<HomeEvent> received = new ArrayList<>();
+
+        @Override
+        public void onEvent(HomeEvent event) {
+            received.add(event);
+        }
     }
 }

@@ -1,9 +1,11 @@
 package org.smarthome.concurrency;
 
 import org.junit.jupiter.api.Test;
-import org.smarthome.observer.ConcurrentSubject;
 import org.smarthome.observer.EventType;
 import org.smarthome.observer.HomeEvent;
+import org.smarthome.observer.Observer;
+import org.smarthome.observer.Subject;
+import org.smarthome.source.EventSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class ConcurrencyTest {
     @Test
     void deliversExactly4000EventsFromFourThreads() throws Exception {
-        ConcurrentSubject<HomeEvent> subject = new ConcurrentSubject<>();
-        AtomicInteger received = new AtomicInteger();
-        subject.subscribe(EventType.MOTION_DETECTED, event -> received.incrementAndGet());
+        Subject<HomeEvent> subject = new EventSource();
+        CountingObserver observer = new CountingObserver();
+        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
 
         ExecutorService executor = Executors.newFixedThreadPool(4);
         CountDownLatch start = new CountDownLatch(1);
@@ -30,14 +32,8 @@ class ConcurrencyTest {
         try {
             for (int i = 0; i < 4; i++) {
                 HomeEvent event = new HomeEvent(
-                        EventType.MOTION_DETECTED, "room-1", "camera-" + i, 1);
-                tasks.add(executor.submit(() -> {
-                    start.await();
-                    for (int j = 0; j < 1000; j++) {
-                        subject.publish(event);
-                    }
-                    return null;
-                }));
+                        EventType.DEVICE_STATE_CHANGED, "room-1", "kettle-" + i, 1500);
+                tasks.add(executor.submit(new ProducerTask(subject, event, start)));
             }
 
             start.countDown();
@@ -53,6 +49,40 @@ class ConcurrencyTest {
             }
         }
 
-        assertEquals(4000, received.get());
+        assertEquals(4000, observer.received.get());
+    }
+
+    private static class CountingObserver implements Observer<HomeEvent> {
+        private final AtomicInteger received = new AtomicInteger();
+
+        @Override
+        public void onEvent(HomeEvent event) {
+            received.incrementAndGet();
+        }
+    }
+
+    private static class ProducerTask implements Runnable {
+        private final Subject<HomeEvent> subject;
+        private final HomeEvent event;
+        private final CountDownLatch start;
+
+        private ProducerTask(Subject<HomeEvent> subject, HomeEvent event, CountDownLatch start) {
+            this.subject = subject;
+            this.event = event;
+            this.start = start;
+        }
+
+        @Override
+        public void run() {
+            try {
+                start.await();
+                for (int i = 0; i < 1000; i++) {
+                    subject.publish(event);
+                }
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(exception);
+            }
+        }
     }
 }
