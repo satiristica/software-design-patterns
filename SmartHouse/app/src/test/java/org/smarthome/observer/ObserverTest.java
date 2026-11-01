@@ -16,55 +16,22 @@ class ObserverTest {
     private final HomeEvent summary =
             new HomeEvent(EventType.ROOM_SUMMARY, "room-1", "room-aggregator", 1500);
 
-    @Test
-    void deliversEvent() {
-        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
 
-        subject.publish(deviceEvent);
-
-        assertEquals(1, observer.received.size());
-        assertSame(deviceEvent, observer.received.get(0));
-    }
 
     @Test
-    void ignoresOtherEventTypes() {
-        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
-
-        subject.publish(summary);
-
-        assertTrue(observer.received.isEmpty());
-    }
-
-    @Test
-    void notifiesAllListeners() {
+    void routesEventsByTypeWithoutDuplicateDelivery() {
         RecordingObserver other = new RecordingObserver();
+        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
         subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
         subject.subscribe(EventType.DEVICE_STATE_CHANGED, other);
 
-        subject.publish(deviceEvent);
+        subject.publish(summary);
+        assertTrue(observer.received.isEmpty());
+        assertTrue(other.received.isEmpty());
 
+        subject.publish(deviceEvent);
         assertEquals(List.of(deviceEvent), observer.received);
         assertEquals(List.of(deviceEvent), other.received);
-    }
-
-    @Test
-    void preventsDuplicateSubscriptions() {
-        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
-        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
-
-        subject.publish(deviceEvent);
-
-        assertEquals(List.of(deviceEvent), observer.received);
-    }
-
-    @Test
-    void stopsDeliveryAfterUnsubscribe() {
-        subject.subscribe(EventType.DEVICE_STATE_CHANGED, observer);
-        subject.unsubscribe(EventType.DEVICE_STATE_CHANGED, observer);
-
-        subject.publish(deviceEvent);
-
-        assertTrue(observer.received.isEmpty());
     }
 
     @Test

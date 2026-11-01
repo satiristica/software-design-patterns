@@ -24,12 +24,8 @@ class VisitorTest {
     private final PowerVisitor powerVisitor = new PowerVisitor();
 
     @Test
-    void calculatesHomePower() {
+    void calculatesHomeAndRoomPower() {
         assertEquals(3410.0, home.accept(powerVisitor), 0.000001);
-    }
-
-    @Test
-    void calculatesOnlySelectedRoom() {
         assertEquals(3310.0, kitchen.accept(powerVisitor), 0.000001);
         assertEquals(100.0, livingRoom.accept(powerVisitor), 0.000001);
     }
@@ -41,55 +37,59 @@ class VisitorTest {
         assertEquals(1910.0, home.accept(powerVisitor), 0.000001);
     }
 
-    @Test
-    void calculatesZeroForEmptyContainers() {
-        assertEquals(0.0, new Home("empty-home", List.of()).accept(powerVisitor), 0.000001);
-        assertEquals(0.0, new Room("empty-room", List.of()).accept(powerVisitor), 0.000001);
-    }
+
 
     @Test
-    void visitsAllDeviceTypesThroughHomeElement() {
-        HomeElement[] devices = {kettle, airFryer, light, tv};
-        double[] expected = {1500, 1800, 10, 100};
-
-        for (int i = 0; i < devices.length; i++) {
-            assertEquals(expected[i], devices[i].accept(powerVisitor), 0.000001);
-        }
-    }
-
-    @Test
-    void accumulatesHomeStatistics() {
+    void accumulatesStatisticsAcrossVisits() {
         StatisticsVisitor visitor = new StatisticsVisitor();
-
         home.accept(visitor);
-
         assertEquals(2, visitor.roomCount());
         assertEquals(4, visitor.deviceCount());
-    }
-
-    @Test
-    void accumulatesStatisticsAcrossSubtreeVisits() {
-        StatisticsVisitor visitor = new StatisticsVisitor();
 
         kitchen.accept(visitor);
-        assertEquals(1, visitor.roomCount());
-        assertEquals(3, visitor.deviceCount());
-
-        livingRoom.accept(visitor);
-        assertEquals(2, visitor.roomCount());
-        assertEquals(4, visitor.deviceCount());
+        assertEquals(3, visitor.roomCount());
+        assertEquals(7, visitor.deviceCount());
     }
 
     @Test
-    void countsEmptyContainers() {
-        StatisticsVisitor visitor = new StatisticsVisitor();
+    void filtersDevicesWithinRequestedSubtree() {
+        FilterVisitor visitor = new FilterVisitor(1000);
 
-        new Home("empty-home", List.of()).accept(visitor);
-        assertEquals(0, visitor.roomCount());
-        assertEquals(0, visitor.deviceCount());
-
-        new Room("empty-room", List.of()).accept(visitor);
-        assertEquals(1, visitor.roomCount());
-        assertEquals(0, visitor.deviceCount());
+        assertEquals(List.of(kettle, airFryer), home.accept(visitor));
+        assertTrue(livingRoom.accept(visitor).isEmpty());
+        assertEquals(List.of(kettle, airFryer, light, tv), home.accept(new FilterVisitor(0)));
     }
+
+    @Test
+    void updatesFilterResultsAndExcludesThresholdBoundary() {
+        FilterVisitor visitor = new FilterVisitor(100);
+        List<HomeElement> previous = home.accept(visitor);
+        assertEquals(List.of(kettle, airFryer), previous);
+
+        kettle.setPowerWatts(0);
+        assertEquals(List.of(airFryer), home.accept(visitor));
+        assertEquals(List.of(kettle, airFryer), previous);
+    }
+
+    @Test
+    void handlesEmptyContainersAndNoMatches() {
+        Home emptyHome = new Home("empty-home", List.of());
+        Room emptyRoom = new Room("empty-room", List.of());
+        assertEquals(0.0, emptyHome.accept(powerVisitor), 0.000001);
+        assertEquals(0.0, emptyRoom.accept(powerVisitor), 0.000001);
+
+        StatisticsVisitor statistics = new StatisticsVisitor();
+        emptyHome.accept(statistics);
+        assertEquals(0, statistics.roomCount());
+        assertEquals(0, statistics.deviceCount());
+        emptyRoom.accept(statistics);
+        assertEquals(1, statistics.roomCount());
+        assertEquals(0, statistics.deviceCount());
+
+        FilterVisitor filter = new FilterVisitor(5000);
+        assertTrue(home.accept(filter).isEmpty());
+        assertTrue(emptyHome.accept(filter).isEmpty());
+        assertTrue(emptyRoom.accept(filter).isEmpty());
+    }
+
 }

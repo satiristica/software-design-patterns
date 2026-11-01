@@ -51,28 +51,27 @@ class IntegrationTest {
     }
 
     @Test
-    void reportsRoomPowerLimitExceeded() {
+    void alertsOnlyAboveLimitAndUpdatesAfterSwitchOff() {
         kettleSource.publish(new HomeEvent(
                 EventType.DEVICE_STATE_CHANGED, "kitchen", "kettle-1", 1900));
         tvSource.publish(new HomeEvent(
-                EventType.DEVICE_STATE_CHANGED, "kitchen", "tv-1", 200));
+                EventType.DEVICE_STATE_CHANGED, "kitchen", "tv-1", 100));
+        assertEquals(2000, summaries.received.get(1).value());
+        assertTrue(alerts.received.isEmpty());
 
+        tvSource.publish(new HomeEvent(
+                EventType.DEVICE_STATE_CHANGED, "kitchen", "tv-1", 200));
         assertEquals(1, alerts.received.size());
         HomeEvent alert = alerts.received.get(0);
         assertEquals(EventType.POWER_LIMIT_EXCEEDED, alert.type());
         assertEquals("kitchen", alert.roomId());
         assertEquals(2100, alert.value());
-    }
 
-    @Test
-    void doesNotAlertAtExactLimit() {
         kettleSource.publish(new HomeEvent(
-                EventType.DEVICE_STATE_CHANGED, "kitchen", "kettle-1", 1900));
-        tvSource.publish(new HomeEvent(
-                EventType.DEVICE_STATE_CHANGED, "kitchen", "tv-1", 100));
-
-        assertEquals(2000, summaries.received.get(1).value());
-        assertTrue(alerts.received.isEmpty());
+                EventType.DEVICE_STATE_CHANGED, "kitchen", "kettle-1", 0));
+        assertEquals(200, tracker.totalPowerWatts());
+        assertEquals(200, summaries.received.get(3).value());
+        assertEquals(1, alerts.received.size());
     }
 
     @Test
@@ -90,21 +89,6 @@ class IntegrationTest {
         assertTrue(alerts.received.isEmpty());
     }
 
-    @Test
-    void updatesPowerWhenDeviceSwitchesOff() {
-        kettleSource.publish(new HomeEvent(
-                EventType.DEVICE_STATE_CHANGED, "kitchen", "kettle-1", 1900));
-        tvSource.publish(new HomeEvent(
-                EventType.DEVICE_STATE_CHANGED, "kitchen", "tv-1", 200));
-        assertEquals(1, alerts.received.size());
-
-        kettleSource.publish(new HomeEvent(
-                EventType.DEVICE_STATE_CHANGED, "kitchen", "kettle-1", 0));
-
-        assertEquals(200, tracker.totalPowerWatts());
-        assertEquals(200, summaries.received.get(2).value());
-        assertEquals(1, alerts.received.size());
-    }
 
     private static class RecordingObserver implements Observer<HomeEvent> {
         private final List<HomeEvent> received = new ArrayList<>();
