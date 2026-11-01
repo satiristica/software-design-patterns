@@ -28,16 +28,10 @@ class VisitorTest {
         assertEquals(3410.0, home.accept(powerVisitor), 0.000001);
         assertEquals(3310.0, kitchen.accept(powerVisitor), 0.000001);
         assertEquals(100.0, livingRoom.accept(powerVisitor), 0.000001);
-    }
 
-    @Test
-    void readsUpdatedDevicePower() {
         kettle.setPowerWatts(0);
-
         assertEquals(1910.0, home.accept(powerVisitor), 0.000001);
     }
-
-
 
     @Test
     void accumulatesStatisticsAcrossVisits() {
@@ -90,6 +84,27 @@ class VisitorTest {
         assertTrue(home.accept(filter).isEmpty());
         assertTrue(emptyHome.accept(filter).isEmpty());
         assertTrue(emptyRoom.accept(filter).isEmpty());
+
+        JsonVisitor json = new JsonVisitor();
+        assertEquals("{\"type\":\"Home\",\"id\":\"empty-home\",\"rooms\":[]}", emptyHome.accept(json));
+        assertEquals("{\"type\":\"Room\",\"id\":\"empty-room\",\"devices\":[]}", emptyRoom.accept(json));
     }
 
+    @Test
+    void exportsNestedJsonAndEscapesIds() {
+        JsonVisitor visitor = new JsonVisitor();
+        String expected = "{\"type\":\"Home\",\"id\":\"home-1\",\"rooms\":["
+                + "{\"type\":\"Room\",\"id\":\"kitchen\",\"devices\":["
+                + "{\"type\":\"Kettle\",\"id\":\"kettle-1\",\"powerWatts\":1500.0},"
+                + "{\"type\":\"AirFryer\",\"id\":\"fryer-1\",\"powerWatts\":1800.0},"
+                + "{\"type\":\"Light\",\"id\":\"light-1\",\"powerWatts\":10.0}]},"
+                + "{\"type\":\"Room\",\"id\":\"living-room\",\"devices\":["
+                + "{\"type\":\"SmartTV\",\"id\":\"tv-1\",\"powerWatts\":100.0}]}]}";
+        assertEquals(expected, home.accept(visitor));
+
+        Kettle special = new Kettle("\"\\\n" + (char) 1, 0);
+        String escaped = "\\\"" + "\\\\" + "\\u000a" + "\\u0001";
+        assertEquals("{\"type\":\"Kettle\",\"id\":\"" + escaped + "\",\"powerWatts\":0.0}",
+                special.accept(visitor));
+    }
 }
