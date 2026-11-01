@@ -2,8 +2,7 @@ package org.smarthome.observer;
 
 public enum EventType {
     DEVICE_STATE_CHANGED,
-    TEMPERATURE_CHANGED,
-    MOTION_DETECTED,
     ROOM_SUMMARY,
+    POWER_LIMIT_EXCEEDED,
     SECURITY_AUDITED
 }

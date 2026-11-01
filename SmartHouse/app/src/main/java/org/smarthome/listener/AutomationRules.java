@@ -8,27 +8,22 @@ import org.smarthome.observer.Subject;
 import java.util.Objects;
 
 public final class AutomationRules implements Observer<HomeEvent> {
-    private final double targetTemperature;
-    private final double heatingPowerWatts;
+    private final double powerLimitWatts;
     private final Subject<HomeEvent> subject;
 
-    public AutomationRules(double targetTemperature, double heatingPowerWatts,
-                           Subject<HomeEvent> subject) {
-        if (!Double.isFinite(targetTemperature) || !Double.isFinite(heatingPowerWatts)
-                || heatingPowerWatts < 0) {
-            throw new IllegalArgumentException("Invalid heating settings");
+    public AutomationRules(double powerLimitWatts, Subject<HomeEvent> subject) {
+        if (!Double.isFinite(powerLimitWatts) || powerLimitWatts < 0) {
+            throw new IllegalArgumentException("Invalid power limit");
         }
-        this.targetTemperature = targetTemperature;
-        this.heatingPowerWatts = heatingPowerWatts;
+        this.powerLimitWatts = powerLimitWatts;
         this.subject = Objects.requireNonNull(subject);
     }
 
     @Override
     public void onEvent(HomeEvent event) {
-        if (event.type() == EventType.TEMPERATURE_CHANGED) {
-            double power = event.value() < targetTemperature ? heatingPowerWatts : 0;
-            subject.publish(new HomeEvent(EventType.DEVICE_STATE_CHANGED,
-                    event.roomId(), event.sourceId(), power));
+        if (event.type() == EventType.ROOM_SUMMARY && event.value() > powerLimitWatts) {
+            subject.publish(new HomeEvent(EventType.POWER_LIMIT_EXCEEDED,
+                    event.roomId(), "automation", event.value()));
         }
     }
 }
