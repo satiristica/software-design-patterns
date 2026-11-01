@@ -33,7 +33,7 @@ Changed files: `CoffeeMachine.java`, `Visitor.java`, `PowerVisitor.java`, `Stati
 A new element required updating the visitor interface and every visitor. Visitor suits stable element types with frequently added operations; frequent new device types would make these updates costly.
 
 
-[UML](https://github.com/satiristica/software-design-patterns/blob/main/SmartHouse/umlka.png)
+[UML](umlka.png)
 
 
 ### Desired Output 
