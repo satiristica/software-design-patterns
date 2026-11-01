@@ -1,5 +1,7 @@
 package org.smarthome.model;
 
+import org.smarthome.visitor.Visitor;
+
 import java.util.Objects;
 
 public final class SmartTV implements HomeElement {
@@ -25,5 +27,10 @@ public final class SmartTV implements HomeElement {
             throw new IllegalArgumentException("Invalid power");
         }
         this.powerWatts = powerWatts;
+    }
+
+    @Override
+    public <R> R accept(Visitor<R> visitor) {
+        return visitor.visit(this);
     }
 }
