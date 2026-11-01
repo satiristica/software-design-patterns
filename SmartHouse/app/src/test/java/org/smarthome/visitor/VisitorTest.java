@@ -56,4 +56,40 @@ class VisitorTest {
             assertEquals(expected[i], devices[i].accept(powerVisitor), 0.000001);
         }
     }
+
+    @Test
+    void accumulatesHomeStatistics() {
+        StatisticsVisitor visitor = new StatisticsVisitor();
+
+        home.accept(visitor);
+
+        assertEquals(2, visitor.roomCount());
+        assertEquals(4, visitor.deviceCount());
+    }
+
+    @Test
+    void accumulatesStatisticsAcrossSubtreeVisits() {
+        StatisticsVisitor visitor = new StatisticsVisitor();
+
+        kitchen.accept(visitor);
+        assertEquals(1, visitor.roomCount());
+        assertEquals(3, visitor.deviceCount());
+
+        livingRoom.accept(visitor);
+        assertEquals(2, visitor.roomCount());
+        assertEquals(4, visitor.deviceCount());
+    }
+
+    @Test
+    void countsEmptyContainers() {
+        StatisticsVisitor visitor = new StatisticsVisitor();
+
+        new Home("empty-home", List.of()).accept(visitor);
+        assertEquals(0, visitor.roomCount());
+        assertEquals(0, visitor.deviceCount());
+
+        new Room("empty-room", List.of()).accept(visitor);
+        assertEquals(1, visitor.roomCount());
+        assertEquals(0, visitor.deviceCount());
+    }
 }
