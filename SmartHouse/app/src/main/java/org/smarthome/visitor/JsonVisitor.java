@@ -1,6 +1,7 @@
 package org.smarthome.visitor;
 
 import org.smarthome.model.AirFryer;
+import org.smarthome.model.CoffeeMachine;
 import org.smarthome.model.Home;
 import org.smarthome.model.HomeElement;
 import org.smarthome.model.Kettle;
@@ -47,6 +48,11 @@ public final class JsonVisitor implements Visitor<String> {
     @Override
     public String visit(SmartTV tv) {
         return device("SmartTV", tv.id(), tv.powerWatts());
+    }
+
+    @Override
+    public String visit(CoffeeMachine coffeeMachine) {
+        return device("CoffeeMachine", coffeeMachine.id(), coffeeMachine.powerWatts());
     }
 
     private String device(String type, String id, double powerWatts) {

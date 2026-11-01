@@ -1,6 +1,7 @@
 package org.smarthome.visitor;
 
 import org.smarthome.model.AirFryer;
+import org.smarthome.model.CoffeeMachine;
 import org.smarthome.model.Home;
 import org.smarthome.model.HomeElement;
 import org.smarthome.model.Kettle;
@@ -51,6 +52,12 @@ public final class StatisticsVisitor implements Visitor<Void> {
 
     @Override
     public Void visit(SmartTV tv) {
+        devices.incrementAndGet();
+        return null;
+    }
+
+    @Override
+    public Void visit(CoffeeMachine coffeeMachine) {
         devices.incrementAndGet();
         return null;
     }

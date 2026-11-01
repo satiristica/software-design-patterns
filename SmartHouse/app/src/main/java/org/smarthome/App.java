@@ -6,6 +6,7 @@ import org.smarthome.listener.DashboardListener;
 import org.smarthome.listener.EnergyTracker;
 import org.smarthome.listener.RoomAggregator;
 import org.smarthome.model.AirFryer;
+import org.smarthome.model.CoffeeMachine;
 import org.smarthome.model.Home;
 import org.smarthome.model.Kettle;
 import org.smarthome.model.Light;
@@ -33,9 +34,10 @@ public final class App {
         Kettle kettle = new Kettle("kettle-1", 0);
         Kettle secondKettle = new Kettle("kettle-2", 0);
         AirFryer airFryer = new AirFryer("fryer-1", 0);
+        CoffeeMachine coffeeMachine = new CoffeeMachine("coffee-1", 0);
         Light light = new Light("light-1", 0);
         SmartTV tv = new SmartTV("tv-1", 0);
-        Room kitchen = new Room("kitchen", List.of(kettle, secondKettle, airFryer));
+        Room kitchen = new Room("kitchen", List.of(kettle, secondKettle, airFryer, coffeeMachine));
         Room livingRoom = new Room("living-room", List.of(light, tv));
         Home home = new Home("home-1", List.of(kitchen, livingRoom));
 

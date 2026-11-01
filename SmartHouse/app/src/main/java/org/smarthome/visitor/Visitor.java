@@ -1,6 +1,7 @@
 package org.smarthome.visitor;
 
 import org.smarthome.model.AirFryer;
+import org.smarthome.model.CoffeeMachine;
 import org.smarthome.model.Home;
 import org.smarthome.model.Kettle;
 import org.smarthome.model.Light;
@@ -19,4 +20,6 @@ public interface Visitor<R> {
     R visit(Light light);
 
     R visit(SmartTV tv);
+
+    R visit(CoffeeMachine coffeeMachine);
 }

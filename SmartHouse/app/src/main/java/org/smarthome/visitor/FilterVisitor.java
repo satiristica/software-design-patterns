@@ -1,6 +1,7 @@
 package org.smarthome.visitor;
 
 import org.smarthome.model.AirFryer;
+import org.smarthome.model.CoffeeMachine;
 import org.smarthome.model.Home;
 import org.smarthome.model.HomeElement;
 import org.smarthome.model.Kettle;
@@ -57,6 +58,11 @@ public final class FilterVisitor implements Visitor<List<HomeElement>> {
     @Override
     public List<HomeElement> visit(SmartTV tv) {
         return match(tv, tv.powerWatts());
+    }
+
+    @Override
+    public List<HomeElement> visit(CoffeeMachine coffeeMachine) {
+        return match(coffeeMachine, coffeeMachine.powerWatts());
     }
 
     private List<HomeElement> match(HomeElement device, double powerWatts) {

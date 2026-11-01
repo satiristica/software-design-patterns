@@ -1,6 +1,7 @@
 package org.smarthome.visitor;
 
 import org.smarthome.model.AirFryer;
+import org.smarthome.model.CoffeeMachine;
 import org.smarthome.model.Home;
 import org.smarthome.model.HomeElement;
 import org.smarthome.model.Kettle;
@@ -45,5 +46,10 @@ public final class PowerVisitor implements Visitor<Double> {
     @Override
     public Double visit(SmartTV tv) {
         return tv.powerWatts();
+    }
+
+    @Override
+    public Double visit(CoffeeMachine coffeeMachine) {
+        return coffeeMachine.powerWatts();
     }
 }
