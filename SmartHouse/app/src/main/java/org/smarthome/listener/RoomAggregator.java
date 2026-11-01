@@ -5,13 +5,13 @@ import org.smarthome.observer.HomeEvent;
 import org.smarthome.observer.Observer;
 import org.smarthome.observer.Subject;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public final class RoomAggregator implements Observer<HomeEvent>, Subject<HomeEvent> {
     private final Subject<HomeEvent> subject;
-    private final ConcurrentMap<String, TemperatureStats> temperatures = new ConcurrentHashMap<>();
+    private final Map<String, HomeEvent> latestEvents = new HashMap<>();
 
     public RoomAggregator(Subject<HomeEvent> subject) {
         this.subject = Objects.requireNonNull(subject);
@@ -19,17 +19,20 @@ public final class RoomAggregator implements Observer<HomeEvent>, Subject<HomeEv
 
     @Override
     public void onEvent(HomeEvent event) {
-        if (event.type() != EventType.TEMPERATURE_CHANGED) {
+        if (event.type() != EventType.DEVICE_STATE_CHANGED) {
             return;
         }
 
-        TemperatureStats stats = temperatures.compute(event.roomId(), (roomId, previous) ->
-                previous == null
-                        ? new TemperatureStats(event.value(), 1)
-                        : new TemperatureStats(previous.sum() + event.value(), previous.count() + 1));
-
-        publish(new HomeEvent(EventType.ROOM_SUMMARY, event.roomId(),
-                "room-aggregator", stats.sum() / stats.count()));
+        double total = 0;
+        synchronized (latestEvents) {
+            latestEvents.put(event.sourceId(), event);
+            for (HomeEvent latest : latestEvents.values()) {
+                if (latest.roomId().equals(event.roomId())) {
+                    total += latest.value();
+                }
+            }
+        }
+        publish(new HomeEvent(EventType.ROOM_SUMMARY, event.roomId(), "room-aggregator", total));
     }
 
     @Override
@@ -45,8 +48,5 @@ public final class RoomAggregator implements Observer<HomeEvent>, Subject<HomeEv
     @Override
     public void publish(HomeEvent event) {
         subject.publish(event);
-    }
-
-    private record TemperatureStats(double sum, long count) {
     }
 }
